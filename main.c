@@ -27,20 +27,19 @@ void evaluate(char currentChar) {
     // ‘)’: Pop and place token in the incomplete postfix expression until a left '('
     //      parenthesis is encountered;
     else if (currentChar == ')') {
-
-        if (!isEmpty(top)) { // isEmpty is for avoiding segmentation fault
-            int leftParanthesisCount = 0; // to invalid expression check
-        
-            while (!isEmpty(top) && top->data != '(') {
-                printf("%c", pop(&top));
-                leftParanthesisCount++; 
-            }
-        
-            if (leftParanthesisCount == 0) { // If no left parenthesis return with failure
-                puts("Invalid expression !!");
-                exit(-1);
-            }
+        while (!isEmpty(top) && top->data != '(') { // isEmpty to avoid segmentation fault
+            printf("%c", pop(&top));
         }
+        
+        // If no left parenthesis return with failure
+        if (!isEmpty(top) && top->data != '(') {
+            puts("\nInvalid Expression!");
+            exit(0);
+        }
+
+        // to avoid printing pushed paranthesis
+        pop(&top);
+
     }
 
     // if current token is an operand, prints it
@@ -105,15 +104,22 @@ int getPriority(char symbol) {
 
 
 int main() {
-    char infixExpression[] =  "1+B/3+5*9-a";
+    char infixExpression[] =  "1+B/3+5*(9-a)";
 
     int i;
     for (i = 0; i < strlen(infixExpression); i++) { // While not EOArithmeticExpression
         evaluate((infixExpression[i]));
     }
 
-    while (!isEmpty(top))
-        printf("%c", pop(&top));
+    char poppedValue;
+
+    while (!isEmpty(top)) {
+        poppedValue = pop(&top);
+        if (poppedValue != '(' || poppedValue != ')') // dont print paratheses
+            printf("%c", poppedValue);
+
+    }
+        
 
 	return 0;
 }
