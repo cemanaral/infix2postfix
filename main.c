@@ -5,6 +5,15 @@
 
 #include "stack.h"
 
+// File names
+#define INPUT_FILE "infix_input.txt" 
+#define OUTPUT_FILE "postfix_output.txt"
+
+// Global files
+FILE *inputFile;
+FILE *outputFile;
+
+
 // Function declarations
 void evaluate(char currentChar);
 int isOperator(char symbol);
@@ -28,7 +37,7 @@ void evaluate(char currentChar) {
     //      parenthesis is encountered;
     else if (currentChar == ')') {
         while (!isEmpty(top) && top->data != '(') { // isEmpty to avoid segmentation fault
-            printf("%c", pop(&top));
+            fprintf(outputFile,"%c", pop(&top));
         }
         
         // If no left parenthesis return with failure
@@ -45,17 +54,17 @@ void evaluate(char currentChar) {
 
     // if current token is an operand, prints it
     else if ( isOperand(currentChar) )
-        printf("%c", currentChar);
+        fprintf(outputFile,"%c", currentChar);
 
     // If an operator
     // a. If empty stack or token has a higher precedence than the top stack element,
     // push token and go to 2.i
     // b. Else pop and place in the incomplete postfix expression and go to c
-    else {
+    else if ( isOperator(currentChar) ) {
         if (isEmpty(top) || getPriority(currentChar) > getPriority(top->data))
             push(&top,currentChar);
         else {
-            printf( "%c", pop(&top) );
+            fprintf(outputFile, "%c", pop(&top) );
             evaluate(currentChar); // recursively goes to c
         }
 
@@ -105,23 +114,30 @@ int getPriority(char symbol) {
 
 
 int main() {
-    char infixExpression[] =  "1+B/3+5*(9-a)";
 
-    int i;
-    for (i = 0; i < strlen(infixExpression); i++) { // While not EOArithmeticExpression
-        evaluate((infixExpression[i]));
-    }
+    // File operations
+    inputFile = fopen(INPUT_FILE, "r");
+    outputFile = fopen(OUTPUT_FILE, "w");
+
+    char currentChar;
+
+    // evaluates and prints to output char by char
+    while ( fscanf(inputFile, "%c", &currentChar) == 1) // Runs until last char
+        evaluate(currentChar);
+
+    fclose(inputFile);
+
 
     char poppedValue;
 
     while (!isEmpty(top)) {
         poppedValue = pop(&top);
-        if (poppedValue != '(' || poppedValue != ')') // dont print paratheses
-            printf("%c", poppedValue);
+        if (poppedValue != '(' || poppedValue != ')') // dont print parentheses
+            fprintf(outputFile,"%c", poppedValue);
 
     }
         
-
+    fclose(outputFile);
 	return 0;
 }
 
