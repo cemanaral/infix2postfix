@@ -47,6 +47,9 @@ void evaluate(char currentChar) {
         printf("%c", currentChar);
 
     // If an operator
+    // a. If empty stack or token has a higher precedence than the top stack element,
+    // push token and go to 2.i
+    // b. Else pop and place in the incomplete postfix expression and go to c
     else {
         while ( !isEmpty(top) // isEmpty is for avoiding segmentation fault
                 && getPriority(currentChar) <= getPriority(top->data) )
