@@ -50,6 +50,7 @@ void evaluate(char currentChar) {
 
     // If an operator
     else {
+        /*
         while ( !isEmpty(top) // isEmpty is for avoiding segmentation fault
                 && getPriority(currentChar) <= getPriority(top->data) )
         {
@@ -57,6 +58,14 @@ void evaluate(char currentChar) {
         }
 
         push(&top, currentChar);
+        */
+        if (isEmpty(top) || getPriority(currentChar) > getPriority(top->data) )
+            push(&top, currentChar);
+        else {
+            printf("%c", pop(&top));
+        }
+            
+
     }
             
 }
