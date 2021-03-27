@@ -19,7 +19,7 @@ void evaluate(char* infix) {
     int i;
     int k;
 
-    for (i=0, k=-1; infix[i]; i++) {
+    for (i=0, k=-1; infix[i] != '\0'; i++) {
         if ( isdigit(infix[i]) )
             infix[++k] = infix[i];
 
