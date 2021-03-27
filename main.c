@@ -8,6 +8,7 @@
 // Function declarations
 void evaluate(char currentChar);
 int isOperator(char symbol);
+int isOperand(char symbol);
 int getPriority(char symbol);
 /////////
 
@@ -42,8 +43,8 @@ void evaluate(char currentChar) {
         }
     }
 
-    // if an operand, prints it
-    else if ( isdigit(currentChar) )
+    // if current token is an operand, prints it
+    else if ( isOperand(currentChar) )
         printf("%c", currentChar);
 
     // If an operator
@@ -55,13 +56,20 @@ void evaluate(char currentChar) {
             push(&top,currentChar);
         else {
             printf( "%c", pop(&top) );
-            evaluate(currentChar);
+            evaluate(currentChar); // recursively goes to c
         }
 
     }
             
 }
 
+int isOperand(char symbol) {
+    /*
+        Checks is symbol is operand.
+        An operand can be either a digit or an alphabetic character
+    */
+    return isdigit(symbol) || isalpha(symbol);
+}
 
 int isOperator(char symbol) {
     /*
@@ -97,7 +105,7 @@ int getPriority(char symbol) {
 
 
 int main() {
-    char infixExpression[] =  "1+2/3+5*4";
+    char infixExpression[] =  "1+B/3+5*9-a";
 
     int i;
     for (i = 0; i < strlen(infixExpression); i++) { // While not EOArithmeticExpression
