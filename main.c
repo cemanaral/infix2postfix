@@ -38,7 +38,8 @@ void evaluate(char currentChar) {
         }
 
         // to avoid printing pushed paranthesis
-        pop(&top);
+        if (!isEmpty(top))
+            pop(&top);
 
     }
 
