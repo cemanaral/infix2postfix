@@ -13,25 +13,44 @@ int getPriority(char symbol);
 
 /////////
 
-StackNodePtr top = NULL;
+StackNodePtr top = NULL; // 1. Initialize an operand stack
 
 void evaluate(char currentChar) {
-    int i;
+    /*
+        Evaluates given symbol using Infix to Postfix conversion rules.
+    */
 
-    if ( isdigit(currentChar) )
-        printf("%c", currentChar);
-
-    else if (currentChar == '(')
+    // ‘(’: Push; // assume the lowest precedence for ‘(’
+    if (currentChar == '(')
         push(&top, currentChar);
 
+
+    // ‘)’: Pop and place token in the incomplete postfix expression until a left '('
+    //      parenthesis is encountered;
     else if (currentChar == ')') {
-        while (top->data != '('  && !isEmpty(top) )
-            printf("%c", pop(&top));
-        pop(&top);
+
+        if (!isEmpty(top)) { // isEmpty is for avoiding segmentation fault
+            int leftParanthesisCount = 0; // to invalid expression check
+        
+            while (!isEmpty(top) && top->data != '(') {
+                printf("%c", pop(&top));
+                leftParanthesisCount++; 
+            }
+        
+            if (leftParanthesisCount == 0) { // If no left parenthesis return with failure
+                puts("Invalid expression !!");
+                exit(-1);
+            }
+        }
     }
 
+    // if an operand, prints it
+    else if ( isdigit(currentChar) )
+        printf("%c", currentChar);
+
+    // If an operator
     else {
-        while ( !isEmpty(top)
+        while ( !isEmpty(top) // isEmpty is for avoiding segmentation fault
                 && getPriority(currentChar) <= getPriority(top->data) )
         {
             printf("%c",  pop(&top));
@@ -92,11 +111,10 @@ int getPriority(char symbol) {
 
 int main() {
     char infixExpression[] =  "1+2/3";
-    // evaluate(infix);
+
     int i;
-    for (i = 0; i < strlen(infixExpression); i++) {
+    for (i = 0; i < strlen(infixExpression); i++) { // While not EOArithmeticExpression
         evaluate((infixExpression[i]));
-        // printf("%c ", infixExpression[i]);
     }
 
     while (!isEmpty(top))
