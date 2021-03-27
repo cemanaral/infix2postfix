@@ -10,7 +10,7 @@ void evaluate(char* infix);
 int isOperator(char symbol);
 int isLeftAssociative(char symbol);
 int getPriority(char symbol);
-int isOperand(char symbol);
+
 /////////
 
 StackNodePtr top = NULL;
@@ -20,7 +20,7 @@ void evaluate(char* infix) {
     int k;
 
     for (i=0, k=-1; infix[i]; i++) {
-        if ( isOperand(infix[i]) )
+        if ( isdigit(infix[i]) )
             infix[++k] = infix[i];
 
         else if (infix[i] == '(')
@@ -62,13 +62,7 @@ int isOperator(char symbol) {
     return 0;
 }
 
-int isOperand(char symbol) {
-    /*
-        Returns 1 if symbol is an operand, else 0
-    */
-    return (symbol >= 'a' && symbol <= 'z') || 
-           (symbol >= 'A' && symbol <= 'Z');
-}
+
 
 
 int isLeftAssociative(char symbol) {
@@ -107,7 +101,7 @@ int getPriority(char symbol) {
 
 
 int main() {
-    char infix[] =  "a+b/x";
+    char infix[] =  "1+2/3";
     evaluate(infix);
 	return 0;
 }
