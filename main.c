@@ -130,6 +130,7 @@ int main() {
 
     char poppedValue;
 
+    // Pop and place token in the incomplete postfix expression until stack is empty
     while (!isEmpty(top)) {
         poppedValue = pop(&top);
         if (poppedValue != '(' || poppedValue != ')') // dont print parentheses
