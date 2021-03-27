@@ -6,64 +6,70 @@
 #include "stack.h"
 
 // Function declarations
-void evaluate(char symbol);
+void evaluate(char* infix);
 int isOperator(char symbol);
 int isLeftAssociative(char symbol);
 int getPriority(char symbol);
+int isOperand(char symbol);
 /////////
 
 StackNodePtr top = NULL;
 
-void evaluate(char symbol) {
-    /*
-        Evaluates given symbol using Infix to Postfix conversion rules.
-    */
+void evaluate(char* infix) {
+    int i;
+    int k;
 
-    // ‘(’: Push; //assume the lowest precedence for ‘(’
-    if (symbol=='(') {
-        push(&top, symbol);
-    }
+    for (i=0, k=-1; infix[i]; i++) {
+        if ( isOperand(infix[i]) )
+            infix[++k] = infix[i];
 
-    // ‘)’: Pop and place token in the incomplete postfix expression until a left
-    //      parenthesis is encountered;
-    else if (symbol==')') {
-        // TODO!!
-    }
+        else if (infix[i] == '(')
+            push(&top, infix[i]);
 
-    // If an operator
-    else if (isOperator(symbol)) {
-
-        // If empty stack or token has a higher precedence than the top stack element,
-        // push token and go to 2.i
-        if ( isEmpty(top) ||  getPriority(symbol) <= getPriority( (char)(top->data) ) ) {
-            push(&top, symbol);
+        else if (infix[i] == ')') {
+            while (!isEmpty(top) && top->data != '(')
+                infix[++k] = pop(&top);
+            pop(&top);
         }
 
-        // Else pop and place in the incomplete postfix expression and go to c
         else {
-            printf("%c ", (char)pop(&top));
+            while (!isEmpty(top) && getPriority(infix[i]) <= getPriority(top->data) )
+                infix[++k] = pop(&top);
+
+            push(&top, infix[i]);
         }
-
+            
     }
 
-    // If an operand
-    else if (isdigit(symbol)) {
-        printf("%c ", symbol);
-    }
+    while (!isEmpty(top))
+        infix[++k] = pop(&top);
 
-} // end of evaluate()
+    infix[++k] = '\0';
+    printf("%s", infix);
+
+}
+
+
 
 int isOperator(char symbol) {
     /*
         Returns 1 if symbol is operator, else 0
     */
-    if (symbol=='+' || symbol=='-' || symbol=='*'
-        || symbol=='/' || symbol=='^')
+    if (symbol=='+' || symbol=='-' || symbol=='*' || symbol=='/' || symbol=='^') {
         return 1;
+    }
 
     return 0;
-
 }
+
+int isOperand(char symbol) {
+    /*
+        Returns 1 if symbol is an operand, else 0
+    */
+    return (symbol >= 'a' && symbol <= 'z') || 
+           (symbol >= 'A' && symbol <= 'Z');
+}
+
 
 int isLeftAssociative(char symbol) {
     /*
@@ -84,7 +90,7 @@ int getPriority(char symbol) {
         Returns the priority of given symbol.
         + -   returns 1
         * /   returns 2
-
+        ^     returns 3
         If given symbol is not an operator, returns 0
     */
     int priority = 0;
@@ -93,27 +99,17 @@ int getPriority(char symbol) {
         priority = 1;
     else if (symbol=='*' || symbol=='/')
         priority = 2;
+    else if (symbol == '^')
+        priority = 3;
 
     return priority;
 }
 
 
 int main() {
-    char example_input[] = "1 / 5 + 6";
-    int len = strlen(example_input);
-
-    for (int i=0; i<len; i++)
-        evaluate(example_input[i]);
-
-
-    // If EOArithmeticExpression
-    // Pop and place token in the incomplete
-    // postfix expression until stack is empty
-    while (!isEmpty(top))
-        printf("%c ", pop(&top));
-
-    printf("\n");
-    return 0;
+    char infix[] =  "a+b/x";
+    evaluate(infix);
+	return 0;
 }
 
 
