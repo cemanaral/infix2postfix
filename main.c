@@ -51,14 +51,12 @@ void evaluate(char currentChar) {
     // push token and go to 2.i
     // b. Else pop and place in the incomplete postfix expression and go to c
     else {
-        while ( !isEmpty(top) // isEmpty is for avoiding segmentation fault
-                && getPriority(currentChar) <= getPriority(top->data) )
-        {
-            printf("%c",  pop(&top));
+        if (isEmpty(top) || getPriority(currentChar) > getPriority(top->data))
+            push(&top,currentChar);
+        else {
+            printf( "%c", pop(&top) );
+            evaluate(currentChar);
         }
-
-        push(&top, currentChar);
-            
 
     }
             
