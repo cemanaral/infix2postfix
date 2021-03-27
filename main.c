@@ -25,26 +25,22 @@ void evaluate(char currentChar) {
         push(&top, currentChar);
 
     else if (currentChar == ')') {
-        while (!isEmpty(top) && top->data != '(')
+        while (top->data != '('  && !isEmpty(top) )
             printf("%c", pop(&top));
         pop(&top);
     }
 
     else {
-        while (!isEmpty(top) && getPriority(currentChar) <= getPriority(top->data) )
+        while ( !isEmpty(top)
+                && getPriority(currentChar) <= getPriority(top->data) )
+        {
             printf("%c",  pop(&top));
+        }
 
         push(&top, currentChar);
     }
             
 }
-
-    
-
-
-
-
-
 
 
 int isOperator(char symbol) {
@@ -57,8 +53,6 @@ int isOperator(char symbol) {
 
     return 0;
 }
-
-
 
 
 int isLeftAssociative(char symbol) {
