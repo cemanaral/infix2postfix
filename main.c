@@ -8,9 +8,7 @@
 // Function declarations
 void evaluate(char currentChar);
 int isOperator(char symbol);
-int isLeftAssociative(char symbol);
 int getPriority(char symbol);
-
 /////////
 
 StackNodePtr top = NULL; // 1. Initialize an operand stack
@@ -50,15 +48,13 @@ void evaluate(char currentChar) {
 
     // If an operator
     else {
-        // If empty stack or token has a higher precedence than the top stack element,
-        // push token and go to 2.i
-        if (isEmpty(top) || getPriority(currentChar) > getPriority(top->data) )
-            push(&top, currentChar);
-        
-        // Else pop and place in the incomplete postfix expression and go to c
-        else {
-            printf("%c", pop(&top));
+        while ( !isEmpty(top) // isEmpty is for avoiding segmentation fault
+                && getPriority(currentChar) <= getPriority(top->data) )
+        {
+            printf("%c",  pop(&top));
         }
+
+        push(&top, currentChar);
             
 
     }
@@ -77,20 +73,6 @@ int isOperator(char symbol) {
     return 0;
 }
 
-
-int isLeftAssociative(char symbol) {
-    /*
-        If given symbol left to right associative returns 1
-        If given symbol right to left associative returns 0
-    */
-    int isLeft = 0;
-
-    if (symbol=='+' || symbol=='-' || symbol=='*' || symbol=='/')
-        isLeft = 1;
-
-    return isLeft;
-
-}
 
 int getPriority(char symbol) {
     /*
