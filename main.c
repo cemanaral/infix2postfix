@@ -50,17 +50,12 @@ void evaluate(char currentChar) {
 
     // If an operator
     else {
-        /*
-        while ( !isEmpty(top) // isEmpty is for avoiding segmentation fault
-                && getPriority(currentChar) <= getPriority(top->data) )
-        {
-            printf("%c",  pop(&top));
-        }
-
-        push(&top, currentChar);
-        */
+        // If empty stack or token has a higher precedence than the top stack element,
+        // push token and go to 2.i
         if (isEmpty(top) || getPriority(currentChar) > getPriority(top->data) )
             push(&top, currentChar);
+        
+        // Else pop and place in the incomplete postfix expression and go to c
         else {
             printf("%c", pop(&top));
         }
@@ -119,7 +114,7 @@ int getPriority(char symbol) {
 
 
 int main() {
-    char infixExpression[] =  "1+2/3";
+    char infixExpression[] =  "1+2/3+5*4";
 
     int i;
     for (i = 0; i < strlen(infixExpression); i++) { // While not EOArithmeticExpression
