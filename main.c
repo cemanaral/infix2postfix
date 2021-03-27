@@ -17,24 +17,23 @@ StackNodePtr top = NULL;
 
 void evaluate(char* infix) {
     int i;
-    int k;
 
-    for (i=0, k=-1; infix[i] != '\0'; i++) {
+    for (i=0; infix[i] != '\0'; i++) {
         if ( isdigit(infix[i]) )
-            infix[++k] = infix[i];
+            printf("%c", infix[i]);
 
         else if (infix[i] == '(')
             push(&top, infix[i]);
 
         else if (infix[i] == ')') {
             while (!isEmpty(top) && top->data != '(')
-                infix[++k] = pop(&top);
+                printf("%c", pop(&top));
             pop(&top);
         }
 
         else {
             while (!isEmpty(top) && getPriority(infix[i]) <= getPriority(top->data) )
-                infix[++k] = pop(&top);
+                printf("%c",  pop(&top));
 
             push(&top, infix[i]);
         }
@@ -42,10 +41,10 @@ void evaluate(char* infix) {
     }
 
     while (!isEmpty(top))
-        infix[++k] = pop(&top);
+        printf("%c", pop(&top));
 
-    infix[++k] = '\0';
-    printf("%s", infix);
+    // infix[++k] = '\0';
+    // printf("%s", infix);
 
 }
 
