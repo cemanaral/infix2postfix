@@ -6,7 +6,7 @@
 #include "stack.h"
 
 // Function declarations
-void evaluate(char* infix);
+void evaluate(char currentChar);
 int isOperator(char symbol);
 int isLeftAssociative(char symbol);
 int getPriority(char symbol);
@@ -15,38 +15,35 @@ int getPriority(char symbol);
 
 StackNodePtr top = NULL;
 
-void evaluate(char* infix) {
+void evaluate(char currentChar) {
     int i;
 
-    for (i=0; infix[i] != '\0'; i++) {
-        if ( isdigit(infix[i]) )
-            printf("%c", infix[i]);
+    if ( isdigit(currentChar) )
+        printf("%c", currentChar);
 
-        else if (infix[i] == '(')
-            push(&top, infix[i]);
+    else if (currentChar == '(')
+        push(&top, currentChar);
 
-        else if (infix[i] == ')') {
-            while (!isEmpty(top) && top->data != '(')
-                printf("%c", pop(&top));
-            pop(&top);
-        }
-
-        else {
-            while (!isEmpty(top) && getPriority(infix[i]) <= getPriority(top->data) )
-                printf("%c",  pop(&top));
-
-            push(&top, infix[i]);
-        }
-            
+    else if (currentChar == ')') {
+        while (!isEmpty(top) && top->data != '(')
+            printf("%c", pop(&top));
+        pop(&top);
     }
 
-    while (!isEmpty(top))
-        printf("%c", pop(&top));
+    else {
+        while (!isEmpty(top) && getPriority(currentChar) <= getPriority(top->data) )
+            printf("%c",  pop(&top));
 
-    // infix[++k] = '\0';
-    // printf("%s", infix);
-
+        push(&top, currentChar);
+    }
+            
 }
+
+    
+
+
+
+
 
 
 
@@ -100,8 +97,17 @@ int getPriority(char symbol) {
 
 
 int main() {
-    char infix[] =  "1+2/3";
-    evaluate(infix);
+    char infixExpression[] =  "1+2/3";
+    // evaluate(infix);
+    int i;
+    for (i = 0; i < strlen(infixExpression); i++) {
+        evaluate((infixExpression[i]));
+        // printf("%c ", infixExpression[i]);
+    }
+
+    while (!isEmpty(top))
+        printf("%c", pop(&top));
+
 	return 0;
 }
 
